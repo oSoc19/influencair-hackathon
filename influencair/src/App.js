@@ -2,7 +2,15 @@ import React, { Component } from "react";
 import "../node_modules/react-vis/dist/style.css";
 import "./App.css";
 import { dummyDataPM10, dummyDataPM25 } from "./dummyData.js";
-import { XAxis, YAxis, XYPlot, LineSeries, Hint, Highlight } from "react-vis";
+import {
+  XAxis,
+  YAxis,
+  XYPlot,
+  LineSeries,
+  Hint,
+  Highlight,
+  ChartLabel
+} from "react-vis";
 
 class App extends Component {
   constructor() {
@@ -33,11 +41,17 @@ class App extends Component {
     let lineGraphDataPM25 = [];
 
     this.state.dummyData.PM10.dailyAverages.map((element, index) =>
-      lineGraphDataPM10.push({ x: index, y: element["Value"] })
+      lineGraphDataPM10.push({
+        x: element["Date"].slice(-5),
+        y: element["Value"]
+      })
     );
 
     this.state.dummyData.PM25.dailyAverages.map((element, index) =>
-      lineGraphDataPM25.push({ x: index, y: element["Value"] })
+      lineGraphDataPM25.push({
+        x: element["Date"].slice(-5),
+        y: element["Value"]
+      })
     );
 
     this.setState({
@@ -54,13 +68,13 @@ class App extends Component {
       <div className="main-container">
         <div className="header-image" />
         <div className="content">
-          <h1 class="title">Brussels</h1>
-          <h2 class="sub_title">
+          <h1 className="title">Brussels</h1>
+          <h2 className="sub_title">
             A data visualization story exploring the air pollution in Brussels
           </h2>
-          <p class="text">Plot average PM10 per day</p>
-
+          <p className="text">Plot average PM10 per day</p>
           <XYPlot
+            xType="ordinal"
             animation
             xDomain={
               lastDrawLocationPM10 && [
@@ -76,6 +90,7 @@ class App extends Component {
             }
             height={250}
             width={1200}
+            margin={{ bottom: 60, left: 50, right: 10, top: 20 }}
           >
             <LineSeries
               className="PM10-series"
@@ -101,28 +116,61 @@ class App extends Component {
                   }
                 }}
               >
-                <div style={{ background: "black" }}>
+                <div
+                  style={{
+                    background: " #96b9c2",
+                    padding: "10px",
+                    color: "white"
+                  }}
+                >
                   <div>PM10:</div>
                   <div>{this.state.hoverValuePM10.y}</div>
                 </div>
               </Hint>
             )}
             <YAxis
-              title="PM10 value"
               style={{
-                title: { fontSize: "18px" }
-              }}
-            />
-            <XAxis
-              title="Days"
-              style={{
-                title: { fontSize: "18px" },
                 line: { stroke: "#ADDDE1" },
                 ticks: { stroke: "#ADDDE1" },
                 text: { stroke: "none", fill: "#6b6b76", fontWeight: 600 }
               }}
             />
-
+            <XAxis
+              tickValues={[
+                "01-01",
+                "02-01",
+                "03-01",
+                "04-01",
+                "05-01",
+                "06-01",
+                "07-01"
+              ]}
+              style={{
+                line: { stroke: "#ADDDE1" },
+                ticks: { stroke: "#ADDDE1" },
+                text: { stroke: "none", fill: "#6b6b76", fontWeight: 600 }
+              }}
+            />
+            <ChartLabel
+              text="Days"
+              includeMargin={false}
+              xPercent={0.5}
+              yPercent={1.4}
+              style={{
+                className: "axis-label"
+              }}
+            />
+            <ChartLabel
+              text="PM10"
+              includeMargin={false}
+              xPercent={-0.03}
+              yPercent={0.5}
+              style={{
+                transform: "rotate(-90)",
+                textAnchor: "end",
+                className: "axis-label"
+              }}
+            />
             <Highlight
               onBrushEnd={area => this.setState({ lastDrawLocationPM10: area })}
               onDrag={area => {
@@ -139,8 +187,9 @@ class App extends Component {
               }}
             />
           </XYPlot>
-          <p class="text">Plot average PM2.5 per day</p>
+          <p className="text">Plot average PM2.5 per day</p>
           <XYPlot
+            xType="ordinal"
             animation
             xDomain={
               lastDrawLocationPM25 && [
@@ -156,11 +205,11 @@ class App extends Component {
             }
             height={250}
             width={1200}
+            margin={{ bottom: 80, left: 50, right: 10, top: 20 }}
           >
             <LineSeries
               className="PM25-series"
               data={this.state.graphData.PM25}
-              // color="purple"
               onNearestX={(value, { index }) =>
                 this.setState({ hoverValuePM25: value, index })
               }
@@ -181,25 +230,60 @@ class App extends Component {
                   }
                 }}
               >
-                <div style={{ background: "black" }}>
+                <div
+                  style={{
+                    background: " #96b9c2",
+                    padding: "10px",
+                    color: "white"
+                  }}
+                >
                   <div>PM25:</div>
                   <div>{this.state.hoverValuePM25.y}</div>
                 </div>
               </Hint>
             )}
             <YAxis
-              title="PM2.5 value"
               style={{
-                title: { fontSize: "18px" }
+                line: { stroke: "#ADDDE1" },
+                ticks: { stroke: "#ADDDE1" },
+                text: { stroke: "none", fill: "#6b6b76", fontWeight: 600 }
               }}
             />
             <XAxis
-              title="Days"
+              tickValues={[
+                "01-01",
+                "02-01",
+                "03-01",
+                "04-01",
+                "05-01",
+                "06-01",
+                "07-01"
+              ]}
               style={{
                 title: { fontSize: "18px" },
                 line: { stroke: "#ADDDE1" },
                 ticks: { stroke: "#ADDDE1" },
                 text: { stroke: "none", fill: "#6b6b76", fontWeight: 600 }
+              }}
+            />
+            <ChartLabel
+              text="Days"
+              includeMargin={false}
+              xPercent={0.5}
+              yPercent={1.4}
+              style={{
+                className: "axis-label"
+              }}
+            />
+            <ChartLabel
+              text="PM2.5"
+              includeMargin={false}
+              xPercent={-0.03}
+              yPercent={0.5}
+              style={{
+                transform: "rotate(-90)",
+                textAnchor: "end",
+                className: "axis-label"
               }}
             />
 
